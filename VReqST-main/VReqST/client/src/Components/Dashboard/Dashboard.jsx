@@ -183,7 +183,7 @@ const Dashboard = ({ auth }) => {
             ) : (
               <>
                 <Text>No recent projects!</Text>
-                <Link to='/project'>Create project</Link>
+                <CLink as={Link} to="/projects">Create project</CLink>
               </>
             )}
           </Box>
@@ -227,9 +227,7 @@ const Dashboard = ({ auth }) => {
             ) : (
               <>
                 <Text>No recent Validators!</Text>
-                <CLink as={Link} to='/myfiles'>
-                  Add Validator
-                </CLink>
+                <CLink as={Link} to='/myfiles'>Add Validator</CLink>
               </>
             )}
           </Box>

@@ -46,6 +46,7 @@ import isJson from "../../utils/checkjson";
 import e from "cors";
 import semantics from "../../utils/syntax.json";
 import Behaviour from "./Behaviour";
+import { Link } from "react-router-dom";
 
 let errors = [];
 let rules = [];
@@ -271,6 +272,7 @@ const ProjectPageContent = ({
   const [position, setPosition] = useState(0);
   const [savebutton, setSavebutton] = useState(false);
   const [rule, setRule] = useState({});
+  const [logic, setLogic] = useState("");
   const [board, setBoard] = useState([]);
   const [reorder, setReorder] = useState(false);
 
@@ -775,58 +777,6 @@ const ProjectPageContent = ({
     }
   };
 
-  // const onChangeFile = async (e) => {
-  //   setGrammarid(e.target.value);
-  //   if (!e.target.value) {
-  //     setGrammarData({});
-  //     return;
-  //   }
-  //   try {
-  //     const requestOptions = {
-  //       headers: { "Content-Type": "application/json", token: jwttoken },
-  //     };
-  //     const res = await Axios.get(
-  //       `http://localhost:5002/api/json/${e.target.value}`,
-  //       requestOptions
-  //     );
-  //     const grammarjson = JSON.parse(res.data.data);
-  //     setGrammarData(grammarjson);
-  //   } catch (error) {
-  //     toast({
-  //       title: "Something went wrong 4",
-  //       status: "error",
-  //       duration: 10000,
-  //       isClosable: true,
-  //       position: "top",
-  //     });
-  //     console.log(error);
-  //   }
-  // };
-
-  // const onChangeFile = async (e) => {
-  //   setGrammarid(e.target.value);
-  //   if (!e.target.value) {
-  //     // setGrammarData({});
-  //     return;
-  //   }
-  //   try {
-  //     //   if(activeStep==0) setGrammarData
-  //     //   if(activeStep==0) setGrammarData(grammarbundle.scene)
-  //     //  else if(activeStep==1) setGrammarData(grammarbundle.asset)
-  //     //  else if(activeStep==2) setGrammarData(grammarbundle.action)
-  //     //  else if(activeStep==3) setGrammarData(grammarbundle.custom)
-  //     //  else if(activeStep==4) setGrammarData(grammarbundle.timeline)
-  //   } catch (error) {
-  //     toast({
-  //       title: "Something went wrong 4",
-  //       status: "error",
-  //       duration: 10000,
-  //       isClosable: true,
-  //       position: "top",
-  //     });
-  //     console.log(error);
-  //   }
-  // };
   const showValidateHandler = async () => {
     let code = data;
     let jsonData = JSON.stringify({
@@ -1041,7 +991,6 @@ const ProjectPageContent = ({
   };
 
   const saveButton = async () => {
-    // console.log("saving");
     try{
       const res = await Axios.post(
         "http://localhost:5002/api/custom/upload-custom-rule", {
@@ -1065,18 +1014,12 @@ const ProjectPageContent = ({
         position: "top-right",
       });
 
-      const res_rules = await Axios.post(
-        "http://localhost:5002/api/custom/get-custom-rules", {
-          headers: {
-            "Content-Type": "application/json", 
-            token: jwttoken 
-          },
-          data: {
-            project_id: projectid
-          }
-        }
-      );
-      setRuleList(res_rules.data);
+      setRuleList([...rule_list, {
+        project_id: projectid,
+        rulename: rulename,
+        data_name: btoa(data),
+        description: description
+      }]);
 
       setdata('');
       setRulename('');
@@ -1087,7 +1030,7 @@ const ProjectPageContent = ({
     }
   }
 
-  const flushButton = () => {
+  const flushWrite = () => {
     console.log('flushed everything!');
     setValidated(false);
     setdata('');
@@ -1096,6 +1039,7 @@ const ProjectPageContent = ({
   }
 
   const onNextStep = async () => {
+    console.log(data);
     if (!isJson(data) && activeStep !== 3) {
       setValidated(false);
       toast({
@@ -1193,7 +1137,7 @@ const ProjectPageContent = ({
       });
     } catch (error) {
       toast({
-        title: "Something went wrong 2",
+        title: "Something went wrong",
         status: "error",
         duration: 10000,
         isClosable: true,
@@ -1307,7 +1251,7 @@ const ProjectPageContent = ({
                   disabled={!data}
                   onClick={onValidate}
                 >
-                  Validate_
+                  Validate
                 </Button>
                 <Button
                   colorScheme="green"
@@ -1474,10 +1418,9 @@ const ProjectPageContent = ({
                 </Box>
               </ModalBody>
               <ModalFooter>
-                <Button onClick={() => {
-                  onClose();
-                  // history.push("/projects");
-                }}>Close</Button>
+                <Button>
+                  <Flex as={Link} to="/projects">Close</Flex>
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
@@ -1486,8 +1429,8 @@ const ProjectPageContent = ({
         <>
           <Tabs isFitted variant="unstyled" marginTop={10}>
             <TabList mb="1em">
-              <Tab _selected={{ color: 'white', bg: 'blue.300' }}>Write</Tab>
-              <Tab _selected={{ color: 'white', bg: 'blue.300' }}>Read</Tab>
+              <Tab _selected={{ color: 'white', bg: 'blue.300' }}>Author Custom Behaviour</Tab>
+              <Tab _selected={{ color: 'white', bg: 'blue.300' }}>View Authored Custom Behaviours</Tab>
               <Tab _selected={{ color: 'white', bg: 'blue.300' }}>Publish</Tab>
             </TabList>
             <TabPanels>
@@ -1496,31 +1439,35 @@ const ProjectPageContent = ({
                   <Grid templateColumns="repeat(8, 1fr)" gap={2}>
                     <GridItem rowSpan={8} colStart={1} colEnd={8}>
                       <Flex py={4} alignItems={"center"} flexDir="column">
-                        <Text fontSize='3xl'>Write your own custom rules here.</Text>
-                        <Flex marginTop={10}>
-                          <Text fontSize='xl'>Name:</Text>
-                          <FormControl
-                            paddingRight={10}
-                            paddingLeft={2}
-                          >
-                            <Input
-                              value={rulename}
-                              onChange={handel_name}
-                              placeholder="Name"
-                              size="sm"
-                            ></Input>
-                          </FormControl>
-                          <Text fontSize='xl'>Description:</Text>
-                          <FormControl
-                            paddingLeft={2}
-                          >
-                            <Input
-                              value={description}
-                              onChange={handel_description}
-                              placeholder="Description"
-                              size="sm"
-                            ></Input>
-                          </FormControl>
+                        <Text fontSize='xl'>Author your custom behaviours below.</Text>
+                        <Flex flexDir="row" marginTop={10}>
+                          <Text fontSize='lg'>Behaviour Name:</Text>
+                          <Flex>
+                            <FormControl
+                              paddingRight={10}
+                              paddingLeft={2}
+                            >
+                              <Input
+                                value={rulename}
+                                onChange={handel_name}
+                                placeholder="Name"
+                                size="sm"
+                              ></Input>
+                            </FormControl>
+                          </Flex>
+                          <Text fontSize='lg'>Behaviour Description:</Text>
+                          <Flex>
+                            <FormControl
+                              paddingLeft={2}
+                            >
+                              <Input
+                                value={description}
+                                onChange={handel_description}
+                                placeholder="Description"
+                                size="sm"
+                              ></Input>
+                            </FormControl>
+                          </Flex>
                         </Flex>
                         <Flex flexDir="row" paddingTop={10} paddingLeft={35} marginLeft={20}>
                           <Box
@@ -1548,7 +1495,7 @@ const ProjectPageContent = ({
                                     color="white"
                                     fontWeight="semibold"
                                   >
-                                    Semantics
+                                    Code Constructs
                                   </Text>
                               </Flex>
                               <Flex
@@ -1638,7 +1585,7 @@ const ProjectPageContent = ({
                                     color="white"
                                     fontWeight="semibold"
                                   >
-                                    Actions
+                                    Action-Responses
                                   </Text>
                               </Flex>
                               <Flex
@@ -1697,7 +1644,7 @@ const ProjectPageContent = ({
                             colorScheme="red"
                             disabled={!(data || rulename || description)}
                             onClick={() => {
-                              flushButton();
+                              flushWrite();
                             }}
                           >
                             Flush
@@ -1844,27 +1791,17 @@ const ProjectPageContent = ({
                   <Grid templateColumns="repeat(6, 1fr)" gap={2}>
                     <GridItem rowSpan={8} colStart={1} colEnd={8}>
                       <Flex py={4} alignItems={"center"} flexDir="column">
-                        <Text fontSize='3xl'>Select a behaviour to view its contents.</Text>
+                        <Text fontSize='xl'>Choose a custom behaviour to view the behaviour logic.</Text>
                         <Flex flexDir="row" paddingTop={10} paddingLeft={35} marginLeft={20}>
                           <Stack direction="column" marginRight={10}>
                             <Flex>
-                              <Text fontSize='xl'>Name:</Text>
-                              <FormControl paddingLeft={2}>
-                                <Text fontSize='xl'>
-                                  {rule.rulename}
-                                </Text>
-                              </FormControl>
+                              <Text fontSize='lg'>Behaviour Name: {rule.rulename}</Text>
                             </Flex>
                             <Flex paddingTop={2}>
-                              <Text fontSize='xl'>Description:</Text>
-                              <FormControl paddingLeft={2}>
-                                <Text fontSize='xl'>
-                                  {rule.description}
-                                </Text>
-                              </FormControl>
+                              <Text fontSize='lg'>Behaviour Description: {rule.description}</Text>
                             </Flex>
                             <Flex paddingTop={2}>
-                              <Text fontSize='xl'>Logic:</Text>
+                              <Text fontSize='lg'>Behaviour Logic:</Text>
                             </Flex>
                             <Flex paddingLeft={12}>
                               <AceEditor
@@ -1882,7 +1819,7 @@ const ProjectPageContent = ({
                                 mode="json"
                                 theme="terminal"
                                 // value={(rule.data_name != null ? atob(rule.data_name) : rule.data_name)}
-                                value={rule.data_name}
+                                value={logic}
                                 name="grammar-editor"
                                 wrapEnabled
                                 height={"28em"}
@@ -1898,7 +1835,7 @@ const ProjectPageContent = ({
                               bg: "gray.800",
                             }}
                             h="36em"
-                            w="16em"
+                            w="18em"
                           >
                             <Box // navbar
                               as="pane"
@@ -1911,14 +1848,14 @@ const ProjectPageContent = ({
                               w="400px"
                             >
                               <Flex px="4" pb="3" pt="5" align="center">
-                                  <Text
-                                    fontSize="2xl"
-                                    ml="2"
-                                    color="white"
-                                    fontWeight="semibold"
-                                  >
-                                    Behaviours
-                                  </Text>
+                                <Text
+                                  fontSize="2xl"
+                                  ml="2"
+                                  color="white"
+                                  fontWeight="semibold"
+                                >
+                                  Custom Behaviours
+                                </Text>
                               </Flex>
                               <Flex
                                 direction="column"
@@ -1932,7 +1869,10 @@ const ProjectPageContent = ({
                                   rule_list.map((p) => (
                                     <Text fontSize='xl'>
                                       <a
-                                        onClick={() => {setRule(p);}}
+                                        onClick={() => {
+                                          setRule(p);
+                                          setLogic(p.data_name);
+                                        }}
                                         color="white"
                                       >
                                         {p.rulename}
@@ -1948,6 +1888,18 @@ const ProjectPageContent = ({
                             </Box>
                           </Box>
                         </Flex>
+                        <Flex marginTop={10}>
+                          <Button
+                            colorScheme="red"
+                            disabled={!rule.rulename}
+                            onClick={() => {
+                              setRule({});
+                              setLogic("");
+                            }}
+                          >
+                            Flush
+                          </Button>
+                        </Flex>
                       </Flex>
                     </GridItem>
                   </Grid>
@@ -1958,19 +1910,22 @@ const ProjectPageContent = ({
                   <Grid templateColumns="repeat(6, 1fr)" gap={2}>
                     <GridItem rowSpan={8} colStart={1} colEnd={8}>
                       <Flex py={4} alignItems={"center"} flexDir={"column"}>
-                        <Text fontSize='3xl'>Drag and drop the items to include in CUSTOM JSON.</Text>
+                        <Text fontSize='xl'>Select and Publish final custom behaviours.</Text>
+                        <Text>Drag and drop custom behaviours from the behaviour section. Organise them
+                          in an order. On saving, the underlying specification will be published.
+                        </Text>
                         <Flex flexDir="row" paddingTop={10} paddingLeft={35} marginLeft={20}>
                           {/* 1. space to hold items: pending */}
-                          <Flex paddingTop={20} marginRight={20}>
+                          <Flex paddingTop={10} marginRight={20}>
                             {/* <DropArea /> */}
                             {board.length > 0 ? (
                               <Box
                                 ref={drop}
-                                width={400}
-                                height={500}
+                                width={600}
+                                height={700}
                                 border='1px solid'
                                 position='relative'
-                                maxHeight={500}
+                                maxHeight={700}
                                 overflowY='auto'
                                 justifyContent='center'
                               >
@@ -1985,27 +1940,27 @@ const ProjectPageContent = ({
                                       backgroundColor='blue.200'
                                       height={10}
                                       width='auto'
-                                      draggable={reorder}
+                                      draggable
                                       onDragStart={(e) => {
-                                      	e.dataTransfer.setData('text/plain', index);
+                                        if (reorder) {
+                                      	  e.dataTransfer.setData('text/plain', index);
+                                        }
                                       }}
                                       onDragOver={(e) => {
                                       	e.preventDefault();
                                       }}
                                       onDrop={(e) => {
-                                      	const dragIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
-                                      	console.log(dragIndex);
-                                      	const hoverIndex = index;
-                                      	if (dragIndex != hoverIndex) {
-                                      		handleReorder(dragIndex, hoverIndex);
-                                      	}
+                                        if (reorder) {
+                                          const dragIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+                                          console.log(dragIndex);
+                                          const hoverIndex = index;
+                                          if (dragIndex != hoverIndex) {
+                                            handleReorder(dragIndex, hoverIndex);
+                                          }
+                                        }
                                       }}
                                     >
-                                      <Text
-                                        fontSize='xl'
-                                      >
-                                        {p.rulename}
-                                      </Text>
+                                      <Text fontSize='xl'>{p.rulename}</Text>
                                     </Button>
                                   ))}
                                 </Stack>
@@ -2013,8 +1968,8 @@ const ProjectPageContent = ({
                             ) : (
                               <Box
                                 ref={drop}
-                                width={400}
-                                height={500}
+                                width={600}
+                                height={700}
                                 border='1px solid'
                                 position='relative'
                                 justifyContent='center'
@@ -2034,7 +1989,7 @@ const ProjectPageContent = ({
                             overflowY='auto'
                           >
                             <Flex align="center">
-                              <Text fontSize="2xl">Behaviours</Text>
+                              <Text fontSize="2xl">Custom Behaviours</Text>
                             </Flex>
                             {rule_list.length > 0 ? (
                               rule_list.map((p) => {
@@ -2047,7 +2002,7 @@ const ProjectPageContent = ({
                             )}
                           </Stack>
                         </Flex>
-                        <Stack py={4} direction="row">
+                        <Stack py={4} direction="row" marginTop={10}>
                           <Button
                             colorScheme="yellow"
                             onClick={() => {setReorder(true)}}
@@ -2081,7 +2036,7 @@ const ProjectPageContent = ({
                             Download File
                           </Button>
                         </Stack>
-                        <Flex width="100%" justify="flex-end">
+                        <Flex width="70%" justify="flex-end">
                           <Button
                             size="sm"
                             onClick={onNextStep}

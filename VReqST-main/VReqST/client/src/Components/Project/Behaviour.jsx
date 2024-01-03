@@ -20,7 +20,7 @@ function Behaviour({ obj, reorder }) {
 		>
 			<Text
 				ref={drag}
-				fontSize='xl'
+				fontSize='lg'
 			>
 				{obj.rulename}
 			</Text>
