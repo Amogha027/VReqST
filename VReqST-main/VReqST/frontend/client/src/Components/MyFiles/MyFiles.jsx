@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { backend } from "../../server_urls";
 
 import FileRow from "./FileRow";
 
@@ -26,7 +27,8 @@ const MyFiles = () => {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
       const res = await axios.get(
-        "http://localhost:5002/api/json/my",
+        // "http://localhost:5002/api/json/my",
+        backend + "/api/json/my",
         requestOptions
       );
 

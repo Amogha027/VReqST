@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { backend } from "../../server_urls";
 
 function FileRow(props) {
   const { name, organization, owner, jsonid, isprivate, data, setdata, show, dash, own } = props;
@@ -37,7 +38,8 @@ function FileRow(props) {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
       await axios.delete(
-        `http://localhost:5002/api/json/${jsonid}`,
+        // `http://localhost:5002/api/json/${jsonid}`,
+        backend + `/api/json/${jsonid}`,
         requestOptions
       );
       setdata(data.filter((d) => d._id !== jsonid));

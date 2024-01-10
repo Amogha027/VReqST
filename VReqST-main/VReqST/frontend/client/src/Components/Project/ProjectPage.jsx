@@ -11,6 +11,7 @@ import Axios from "axios";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { backend } from "../../server_urls";
 
 import ProjectPageContent from "./ProjectPageContent";
 import { DndProvider } from 'react-dnd';
@@ -42,7 +43,8 @@ const ProjectPage = () => {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
       const res = await Axios.get(
-        `http://localhost:5002/api/project/${projectid}`,
+        // `http://localhost:5002/api/project/${projectid}`,
+        backend + `/api/project/${projectid}`,
         requestOptions
       );
 

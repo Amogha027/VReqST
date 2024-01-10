@@ -24,6 +24,7 @@ import {
   MenuItem
 } from "@chakra-ui/react";
 import axios from "axios";
+import { backend } from "../../server_urls";
 
 import ProjectRow from "./ProjectRow";
 import { FaPlus } from "react-icons/fa";
@@ -82,7 +83,8 @@ const Project = () => {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
       const res = await axios.get(
-        "http://localhost:5002/api/project/my",
+        // "http://localhost:5002/api/project/my",
+        backend + "/api/project/my",
         requestOptions
       );
 
@@ -102,7 +104,8 @@ const Project = () => {
 
   const getfiles = async () => {
     const jwttoken = localStorage.getItem("jwtToken");
-    let url = `http://localhost:5002/api/json/timeline`;
+    // let url = `http://localhost:5002/api/json/timeline`;
+    let url = backend + `/api/json/timeline`;
     try {
       const requestOptions = {
         headers: { "Content-Type": "application/json", token: jwttoken },

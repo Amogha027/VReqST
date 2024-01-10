@@ -26,6 +26,7 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-terminal";
 import { FaSave, FaTimes } from "react-icons/fa";
 import { useHistory, useParams, Link } from "react-router-dom";
+import { backend } from "../../server_urls";
 
 import isJson from "../../utils/checkjson";
 import { check } from "express-validator";
@@ -65,7 +66,8 @@ const EditFile = () => {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
       const res = await axios.get(
-        `http://localhost:5002/api/json/${fileid}`,
+        // `http://localhost:5002/api/json/${fileid}`,
+        backend + `/api/json/${fileid}`,
         requestOptions
       );
 
@@ -176,21 +178,21 @@ const EditFile = () => {
         headers: { "Content-Type": "application/json", token: jwttoken },
       };
 
-      let url = "";
+      let url = backend;
       if (grammarfor == "scene") {
-        url = `http://localhost:5002/api/json/${fileid}/scene`;
+        url = url + `/api/json/${fileid}/scene`;
         setSceneData(data);
       }
       if (grammarfor == "action") {
-        url = `http://localhost:5002/api/json/${fileid}/action`;
+        url = url + `/api/json/${fileid}/action`;
         setActionData(data);
       }
       if (grammarfor == "asset") {
-        url = `http://localhost:5002/api/json/${fileid}/asset`;
+        url = url + `/api/json/${fileid}/asset`;
         setAssetData(data);
       }
       if (grammarfor == "timeline") {
-        url = `http://localhost:5002/api/json/${fileid}/timeline`;
+        url = url + `/api/json/${fileid}/timeline`;
         setTimelineData(data);
       }
       setSaved(true);
