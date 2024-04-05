@@ -28,7 +28,7 @@ Router.post(
 
       if (exists) {
         return res.status(400).json({
-          message: "JSON file with this name already exists",
+          message: "Template file with this name already exists",
         });
       }
 
@@ -42,7 +42,7 @@ Router.post(
       res.status(200).json({ message: "File Uploaded successfully" });
     } catch (e) {
       console.error(e);
-      res.status(500).send({ message: "Cannot upload JSON file" });
+      res.status(500).send({ message: "Cannot upload template file" });
     }
   }
 );
@@ -54,7 +54,7 @@ Router.get("/my", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -66,7 +66,7 @@ Router.get("/all", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -82,7 +82,7 @@ Router.get("/:json_id/scene", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
     console.log("heloo");
   }
 });
@@ -99,7 +99,7 @@ Router.get("/:json_id/action", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -115,7 +115,7 @@ Router.get("/:json_id/asset", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -131,7 +131,7 @@ Router.get("/:json_id/custom", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -147,7 +147,7 @@ Router.get("/timeline", authenticate, async (req, res) => {
     res.status(200).json(jsonfiles);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot fetch your json files" });
+    res.status(500).send({ message: "Cannot fetch your template files" });
   }
 });
 
@@ -170,13 +170,13 @@ Router.get("/:json_id", authenticate, async (req, res) => {
   try {
     const jsonfile = await Json.findById(req.params.json_id);
     if (!jsonfile) {
-      return res.status(400).send({ message: "Json file not found" });
+      return res.status(400).send({ message: "Template file not found" });
     }
 
     return res.status(200).send(jsonfile);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
 
@@ -198,10 +198,10 @@ Router.patch("/:json_id/asset", authenticate, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send({ message: "Json Updated Successfully" });
+    return res.status(200).send({ message: "Template file Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
 
@@ -223,10 +223,10 @@ Router.patch("/:json_id/action", authenticate, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send({ message: "Json Updated Successfully" });
+    return res.status(200).send({ message: "Template file Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
 
@@ -248,10 +248,10 @@ Router.patch("/:json_id/custom", authenticate, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send({ message: "Json Updated Successfully" });
+    return res.status(200).send({ message: "Template file Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
 
@@ -273,10 +273,10 @@ Router.patch("/:json_id/timeline", authenticate, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send({ message: "Json Updated Successfully" });
+    return res.status(200).send({ message: "Template file Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
 
@@ -301,43 +301,12 @@ Router.patch("/:json_id/scene", authenticate, async (req, res) => {
       { new: true }
     );
 
-    return res.status(200).send({ message: "Json Updated Successfully" });
+    return res.status(200).send({ message: "Template file Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot update the JSON file" });
+    res.status(500).send({ message: "Cannot update the template file" });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -354,10 +323,10 @@ Router.delete("/:json_id", authenticate, async (req, res) => {
 
     await Json.findByIdAndDelete(req.params.json_id);
 
-    return res.status(200).send({ message: "Json deleted Successfully" });
+    return res.status(200).send({ message: "Template file deleted Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: "Cannot delete the JSON file" });
+    res.status(500).send({ message: "Cannot delete the template file" });
   }
 });
 
